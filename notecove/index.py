@@ -1,6 +1,5 @@
 import hashlib
 import sqlite3
-from pathlib import Path
 
 from notecove.chunks import split, terms
 
@@ -64,3 +63,11 @@ class Index:
     def documents(self):
         return [dict(row) for row in self.db.execute("""SELECT d.source,d.digest,COUNT(c.id) AS chunks
             FROM documents d LEFT JOIN chunks c ON c.document_id=d.id GROUP BY d.id ORDER BY d.source""")]
+
+    def delete(self, source):
+        with self.db:
+            return bool(self.db.execute("DELETE FROM documents WHERE source=?", (source,)).rowcount)
+
+    def stats(self):
+        return {name: self.db.execute("SELECT COUNT(*) FROM " + name).fetchone()[0]
+                for name in ("documents", "chunks")}
