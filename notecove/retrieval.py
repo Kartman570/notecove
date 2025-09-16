@@ -18,3 +18,17 @@ def retrieve(index, query, limit=5, per_source=2, budget=4500):
         if len(selected) == limit or remaining <= 0:
             break
     return selected
+
+
+def hybrid(index, vectors, query, model, limit=5):
+    if not 1 <= limit <= 20:
+        raise ValueError("Limit must be between 1 and 20")
+    rankings = (index.search(query, min(100, limit * 4)), vectors.search(query, model, min(100, limit * 4)))
+    scores = {}
+    hits = {}
+    for ranking in rankings:
+        for rank, hit in enumerate(ranking, 1):
+            key = hit['id']
+            scores[key] = scores.get(key, 0) + 1 / (60 + rank)
+            hits[key] = hit
+    return [dict(hits[key], score=scores[key]) for key in sorted(scores, key=lambda key: (-scores[key], key))[:limit]]
