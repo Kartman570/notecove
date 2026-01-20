@@ -1,0 +1,6 @@
+{"question":"restore checksum snapshots", "sources":["backups.md"]}
+{"question":"worker expired lease", "sources":["queue.md"]}
+{"question":"overlapping excerpts index", "sources":["search.md"]}
+{"question":"backoff permanent failures", "sources":["queue.md"]}
+{"question":"separate disk snapshots", "sources":["backups.md"]}
+{"question":"volcano eruption forecast", "sources":[]}
