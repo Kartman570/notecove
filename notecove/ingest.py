@@ -2,6 +2,8 @@ from pathlib import Path
 
 
 def ingest_folder(index, folder, size=900, overlap=120, max_bytes=2_000_000):
+    if max_bytes < 1:
+        raise ValueError("File size limit must be positive")
     root = Path(folder).resolve()
     if not root.is_dir():
         raise ValueError("Input must be a directory")

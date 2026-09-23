@@ -50,10 +50,10 @@ class Index:
 
     def search(self, query, limit=5):
         tokens = list(dict.fromkeys(terms(query)))[:40]
-        if not tokens:
-            return []
         if not 1 <= limit <= 100:
             raise ValueError("Limit must be between 1 and 100")
+        if not tokens:
+            return []
         expression = " OR ".join('"' + token + '"' for token in tokens)
         return [dict(row) for row in self.db.execute("""SELECT c.id,c.ordinal,c.text,c.start,c.end,d.source,
             bm25(search) AS score FROM search JOIN chunks c ON c.id=search.rowid
