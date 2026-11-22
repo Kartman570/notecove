@@ -12,7 +12,7 @@ class ModelError(Exception):
 class Ollama:
     def __init__(self, model, base_url="http://127.0.0.1:11434", timeout=60):
         parsed = urlparse(base_url)
-        if not model or parsed.scheme not in ("http", "https") or not parsed.hostname or parsed.username:
+        if not model or parsed.scheme not in ("http", "https") or not parsed.hostname or parsed.username or parsed.password or parsed.query or parsed.fragment:
             raise ValueError("A model name and HTTP endpoint are required")
         self.model = model
         self.base_url = base_url.rstrip("/")

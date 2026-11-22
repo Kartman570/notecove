@@ -1,0 +1,12 @@
+services:
+  search:
+    build: .
+    ports:
+      - "127.0.0.1:8001:8000"
+    environment:
+      NOTECOVE_API_KEY: ${NOTECOVE_API_KEY:?Set NOTECOVE_API_KEY}
+    volumes:
+      - notes-data:/data
+      - ./examples/notes:/notes:ro
+volumes:
+  notes-data:

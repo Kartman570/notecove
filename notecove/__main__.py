@@ -1,5 +1,8 @@
 import argparse
 import json
+import sys
+
+from notecove.export import export_chunks, check_index
 
 from notecove.answers import answer
 from notecove.evaluate import evaluate, load_cases
@@ -8,7 +11,7 @@ from notecove.retrieval import hybrid
 from notecove.vectors import Vectors
 
 from notecove.index import Index
-from notecove.ingest import ingest_folder
+from notecove.ingest import ingest_folder, prune_missing
 
 
 def main():
@@ -22,6 +25,10 @@ def main():
     search.add_argument("--limit", type=int, default=5)
     commands.add_parser("documents")
     commands.add_parser("stats")
+    commands.add_parser("check")
+    commands.add_parser("export")
+    prune = commands.add_parser("prune")
+    prune.add_argument("folder")
     remove = commands.add_parser("delete")
     remove.add_argument("source")
     ask = commands.add_parser("ask")
@@ -49,6 +56,13 @@ def main():
             result = answer(index, args.question, model)
         elif args.command == "evaluate":
             result = evaluate(index, load_cases(args.cases), args.k)
+        elif args.command == "export":
+            export_chunks(index, sys.stdout)
+            return
+        elif args.command == "check":
+            result = check_index(index)
+        elif args.command == "prune":
+            result = {"removed": prune_missing(index, args.folder)}
         elif args.command == "stats":
             result = index.stats()
         elif args.command == "delete":
