@@ -24,3 +24,9 @@ class ApiTests(unittest.TestCase):
                 self.assertIn('[S1]', response.json()['answer'])
                 self.assertEqual(client.post('/ask', json={'question': ' '}, headers=headers).status_code, 422)
                 self.assertEqual(client.get('/search?q=x&limit=0', headers=headers).status_code, 422)
+
+    def test_non_ascii_auth_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with TestClient(create_app(Path(directory) / 'index.sqlite3', 'key')) as client:
+                response = client.get('/documents', headers={b'Authorization': b'Bearer \xff'})
+                self.assertEqual(response.status_code, 401)
