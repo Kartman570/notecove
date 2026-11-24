@@ -24,7 +24,7 @@ def create_app(path=None, api_key=None, model=None):
     app = FastAPI(title="Notecove")
 
     def authorize(authorization: str = Header(default="")):
-        if not hmac.compare_digest(authorization, "Bearer " + api_key):
+        if not hmac.compare_digest(authorization.encode(), ("Bearer " + api_key).encode()):
             raise HTTPException(401, "Invalid API key")
 
     @contextmanager
